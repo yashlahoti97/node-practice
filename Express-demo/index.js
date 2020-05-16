@@ -58,7 +58,6 @@ app.delete('/api/courses/:id', (req, res) => {
 });
 
 
-
 const port = process.env.PORT || 3000
 
 app.listen(port, ()=>{
@@ -69,6 +68,5 @@ function validateCourse(course) {
     const schema = {
         name: Joi.string().min(3).required()
     };
-
     return Joi.validate(course, schema)
 }
