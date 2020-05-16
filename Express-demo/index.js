@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const logger = require('./middleware/logger');
 const courses = require('./routes/courses');
-const home = require('./routes/courses');
+const home = require('./routes/home');
 const express = require('express');
 const app = express();
 
@@ -16,12 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
 app.use(helmet());
-app.use('/api/courses', courses);
 app.use('/', home);
+app.use('/api/courses', courses);
 //configuration
 console.log('Application Name: '+ config.get('name'));
 console.log('Mail Server: '+ config.get('mail.host'));
-console.log('Mail Password: '+ config.get('mail.password'));
+// console.log('Mail Password: '+ config.get('mail.password'));
 // console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 // console.log(`app: ${app.get('env')}`);
 
