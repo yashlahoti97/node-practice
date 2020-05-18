@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
-const customers = require('./routes/customers.js');
-const genres = require('./routes/genres.js');
-const movies = require('./routes/movies.js');
-const rentals = require('./routes/rentals.js');
+const customers = require('./routes/customers');
+const auth = require('./routes/auth');
+const genres = require('./routes/genres');
+const users = require('./routes/users');
+const movies = require('./routes/movies');
+const rentals = require('./routes/rentals');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
@@ -13,6 +15,8 @@ app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/rentals', rentals);
 app.use('/api/movies', movies);
+app.use('/api/users', users);
+app.use('/api/auth', auth);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`Listening to port ${port}`));
