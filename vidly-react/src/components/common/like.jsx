@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
 
 // Input: liked:Boolean
 // Output: onClick:toggle
 
-const Like = (props) => {
+const Like = ({ liked, onClick }) => {
   let classes = "fa fa-heart";
-  if (!props.liked) {
+  if (!liked) {
     classes += "-o";
   }
   return (
     <i
-      onClick={props.onClick}
+      onClick={onClick}
       style={{ cursor: "pointer" }}
       className={classes}
       aria-hidden="true"
