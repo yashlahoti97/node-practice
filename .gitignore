@@ -3,5 +3,6 @@ Express-demo/node_modules/
 vindly/node_modules/
 async-demo/node_modules/
 mongo-demo/node_modules/
-react-app/node_modules
-counter-app/node_modules
+react-app/node_modules/
+counter-app/node_modules/
+router-app/node_modules/
