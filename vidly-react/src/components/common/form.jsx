@@ -12,18 +12,18 @@ class Form extends Component {
     const options = { abortEarly: false };
     const { error } = Joi.validate(this.state.data, this.schema, options);
     if (!error) return null;
-    const errors1 = {};
+    const errors = {};
     error.details.map((item) => {
-      errors1[item.path[0]] = item.message;
+      errors[item.path[0]] = item.message;
     });
-    return errors1;
+    return errors;
   };
 
   validateProperty = ({ name, value }) => {
     const obj = { [name]: value };
     const schema = { [name]: this.schema[name] };
     const { error } = Joi.validate(obj, schema);
-    return !error ? null : error.details[0].message;
+    return error ? error.details[0].message : null;
   };
 
   handleSubmit = (e) => {
@@ -75,7 +75,7 @@ class Form extends Component {
   }
 
   renderSelect(name, label, options) {
-    const { data, error } = this.state;
+    const { data, errors } = this.state;
     return (
       <Select
         name={name}
@@ -83,7 +83,7 @@ class Form extends Component {
         value={data[name]}
         options={options}
         onChange={this.handleChange}
-        error={error}
+        error={errors[name]}
       />
     );
   }

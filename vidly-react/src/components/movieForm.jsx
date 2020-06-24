@@ -1,8 +1,8 @@
 import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import { getGenres } from "../services/fakeGenreService";
-import { saveMovie, getMovie } from "../services/fakeMovieService";
+import { getGenres } from "../services/genreService";
+import { saveMovie, getMovie } from "../services/movieService";
 
 class MovieForm extends Form {
   state = {
@@ -10,7 +10,7 @@ class MovieForm extends Form {
       title: "",
       genreId: "",
       numberInStock: "",
-      rate: "",
+      dailyRentalRate: "",
     },
     genres: [],
     errors: {},
@@ -26,53 +26,59 @@ class MovieForm extends Form {
       .min(0)
       .max(100)
       .label("Number In Stock"),
-    rate: Joi.number().min(0).max(10).label("Daily Rental Rate"),
+    dailyRentalRate: Joi.number().min(0).max(10).label("Daily Rental Rate"),
   };
 
-  componentDidMount() {
-    const genres = getGenres();
+  async populateGenres() {
+    const { data: genres } = await getGenres();
     this.setState({ genres });
+  }
 
-    const movieId = this.props.match.params.id;
-    if (movieId === "new") return;
-    const movie = getMovie(movieId);
-    if (!movie) return this.props.history.replace("/not-found");
+  async populateMovie() {
+    try {
+      const movieId = this.props.match.params.id;
+      if (movieId === "new") return;
 
-    this.setState({ data: this.mapToViewModel(movie) });
+      const { data: movie } = await getMovie(movieId);
+      this.setState({ data: this.mapToViewModel(movie) });
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        this.props.history.replace("/not-found");
+    }
+  }
+
+  async componentDidMount() {
+    await this.populateGenres();
+    await this.populateMovie();
   }
 
   mapToViewModel(movie) {
     return {
       _id: movie._id,
       title: movie.title,
-      genre: movie.genre._id,
+      genreId: movie.genre._id,
       numberInStock: movie.numberInStock,
       dailyRentalRate: movie.dailyRentalRate,
     };
   }
 
-  doSumbit() {
-    saveMovie(this.state.data);
+  doSubmit = async () => {
+    await saveMovie(this.state.data);
     this.props.history.push("/movies");
-  }
+  };
 
   render() {
     const { match, history } = this.props;
     return (
       <div>
-        <h1>MovieForm {match.params.id}</h1>
-        {this.renderInput("title", "Title")}
-        {this.renderSelect("genre", "Genre", this.state.genres)}
-        {this.renderInput("numberInStock", "Number In Stock")}
-        {this.renderInput("rate", "Rate")}
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            history.push("/movies");
-          }}
-        >
-          Save
-        </button>
+        <h1>MovieForm</h1>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput("title", "Title")}
+          {this.renderSelect("genreId", "Genre", this.state.genres)}
+          {this.renderInput("numberInStock", "Number In Stock")}
+          {this.renderInput("dailyRentalRate", "Rate")}
+          {this.renderButton("Save")}
+        </form>
       </div>
     );
   }
