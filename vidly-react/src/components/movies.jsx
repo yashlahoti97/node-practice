@@ -99,7 +99,7 @@ class Movies extends Component {
 
   render() {
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
-
+    const { user } = this.props;
     const { totalCount, data: movies } = this.getPagedData();
 
     return (
@@ -112,13 +112,15 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <Link
-            to="/movies/new"
-            className="btn btn-primary"
-            style={{ marginBottom: 20 }}
-          >
-            New Movie
-          </Link>
+          {user && (
+            <Link
+              to="/movies/new"
+              className="btn btn-primary"
+              style={{ marginBottom: 20 }}
+            >
+              New Movie
+            </Link>
+          )}
           {totalCount === 0 ? (
             <p>There are no movies to show.</p>
           ) : (
